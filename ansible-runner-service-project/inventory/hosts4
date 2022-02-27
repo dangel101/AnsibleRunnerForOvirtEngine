@@ -1,0 +1,8 @@
+all:
+  children:
+    ips:
+      children: null
+      hosts:
+        192.168.100.204:
+          ansible_host: 192.168.100.204
+          ansible_port: 22

@@ -1,0 +1,57 @@
+---
+- name: First role, first task
+  debug:
+    msg: "this is a task of the first role"
+
+- name: First role, second task
+  debug:
+    msg: "this is a second task of the first role"
+
+- name: First role, third task
+  debug:
+    msg: "this is a third task of the first role"
+
+- name: Test
+  debug:
+    msg: "[WARNING] this is a debug message"
+
+- name: first role, 4th task - which takes time... - fetch installed packages
+  package_facts:
+    manager: auto
+
+#
+#- name: fail task.
+#  fail:
+#    msg: "fail this task"
+
+#- name: Setup Ansible Python interpreter
+#  set_fact:
+#    ansible_python_interpreter : "{{ '/usr/bin/python3'
+#        if (fc_ver|int > 0 or el_ver|int >= 8)
+#        else '/usr/bin/python2' }}"
+
+- name: Detect host operating system
+  set_fact:
+    el_ver: "{{ ansible_distribution_major_version|int
+        if ansible_os_family == 'RedHat'
+        else 0 }}"
+    fc_ver: "{{ ansible_distribution_major_version|int
+        if ansible_distribution == 'Fedora'
+        else 0 }}"
+
+- name: Parse operating system release
+  lineinfile:
+    path: /etc/os-release
+    line: 'VARIANT_ID="ovirt-node"'
+  check_mode: yes
+  register: node_presence
+
+- name: Detect if host is a prebuilt image
+  set_fact:
+    node_host: "{{ not node_presence.changed }}"
+
+- name: Setup Ansible Python interpreter
+  set_fact:
+    ansible_python_interpreter : "{{ '/usr/bin/python3'
+        if (fc_ver|int > 0 or el_ver|int >= 8)
+        else '/usr/bin/python2' }}"

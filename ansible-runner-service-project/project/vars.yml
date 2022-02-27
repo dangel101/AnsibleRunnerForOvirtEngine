@@ -1,0 +1,8 @@
+- hosts: all
+  remote_user: root
+
+  tasks:
+    - name: including vars
+      include_vars:
+        dir: /home/delfassy/projects/AnsibleRunnerImplementation/ansible-runner-service-project/env
+        name: host4.yml

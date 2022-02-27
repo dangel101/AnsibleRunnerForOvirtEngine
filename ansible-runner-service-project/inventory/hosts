@@ -1,0 +1,7 @@
+all:
+  children:
+    ips:
+      children: null
+      hosts:
+          ansible_host:
+          ansible_port:

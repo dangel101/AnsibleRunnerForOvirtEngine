@@ -1,0 +1,12 @@
+---
+- name: Second role, first task
+  debug:
+    msg: "this is a task of the second role"
+
+- name: Second role, second task
+  debug:
+    msg: "[WARNING] this is a debug msg"
+
+#- name: Second role, fail
+#  fail:
+#    msg: "fail as requested"

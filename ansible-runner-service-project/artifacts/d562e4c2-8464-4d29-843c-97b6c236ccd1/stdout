@@ -1,0 +1,59 @@
+
+PLAY [all] *********************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [192.168.100.204]
+
+TASK [role1 : First role, first task] ******************************************
+ok: [192.168.100.204] => {
+    "msg": "this is a task of the first role"
+}
+
+TASK [role1 : First role, second task] *****************************************
+ok: [192.168.100.204] => {
+    "msg": "this is a second task of the first role"
+}
+
+TASK [role1 : First role, third task] ******************************************
+ok: [192.168.100.204] => {
+    "msg": "this is a third task of the first role"
+}
+
+TASK [role1 : Test] ************************************************************
+ok: [192.168.100.204] => {
+    "msg": "[WARNING] this is a debug message"
+}
+
+TASK [role1 : first role, 4th task - which takes time... - fetch installed packages] ***
+ok: [192.168.100.204]
+
+TASK [role1 : Detect host operating system] ************************************
+ok: [192.168.100.204]
+
+TASK [role1 : Parse operating system release] **********************************
+changed: [192.168.100.204]
+
+TASK [role1 : Detect if host is a prebuilt image] ******************************
+ok: [192.168.100.204]
+
+TASK [role1 : Setup Ansible Python interpreter] ********************************
+ok: [192.168.100.204]
+
+TASK [role2 : Second role, first task] *****************************************
+ok: [192.168.100.204] => {
+    "msg": "this is a task of the second role"
+}
+
+TASK [role2 : Second role, second task] ****************************************
+ok: [192.168.100.204] => {
+    "msg": "[WARNING] this is a debug msg"
+}
+
+TASK [test playbook, first task] ***********************************************
+ok: [192.168.100.204] => {
+    "msg": "this is a plain ansible task"
+}
+
+PLAY RECAP *********************************************************************
+192.168.100.204            : ok=13   changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+

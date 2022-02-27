@@ -1,0 +1,2 @@
+ansible_port: 22
+host_deploy_cluster_name: cluster4

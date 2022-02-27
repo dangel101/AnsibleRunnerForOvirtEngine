@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/site-packages/ansible_runner/__main__.py", line 598, in main
+    res = run(**run_options)
+  File "/usr/lib/python3.6/site-packages/ansible_runner/interface.py", line 177, in run
+    r = init_runner(**kwargs)
+  File "/usr/lib/python3.6/site-packages/ansible_runner/interface.py", line 43, in init_runner
+    dump_artifacts(kwargs)
+  File "/usr/lib/python3.6/site-packages/ansible_runner/utils.py", line 192, in dump_artifacts
+    kwargs['inventory'] = dump_artifact(obj, path, 'hosts')
+  File "/usr/lib/python3.6/site-packages/ansible_runner/utils.py", line 123, in dump_artifact
+    with open(fn, 'w') as f:
+PermissionError: [Errno 13] Permission denied: '/home/delfassy/projects/playground/ansible-runner-service-project/project/inventory/hosts'

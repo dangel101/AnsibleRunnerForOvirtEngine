@@ -1,0 +1,32 @@
+AnsibleConstants:
+hold project & artifacts dirs and playbook name.
+change if testing.
+
+Main:
+
+
+
+PlaybookRunner:
+executes the command to run the playbook with the uuid and host parameters
+
+AnsibleProcessor:
+* playHasEnded(): successful run ends with "playbook_on_stats" event. 
+* artifactHandler: continues to process the events until it reaches the final event or 'till timeout was reached.
+* processEvents: 
+	- get the events sorted numerically- only events that haven't been handled yet.
+	- return if jsonfile is not valid
+	- log each task's name,
+	- log each task's output whether succeeded or failed.
+	- the log contain all of the needed output, and currently saves in 2 places:
+		1. host_deploy.log under the specific artifact dir (this is a temp file - more comfortable for debugging etc. will be removed in the project)
+		2. under the path ansible-runner-service-project/host-deploy-logs
+		   currently has the uuid & timestamp as its name- will be changed.
+
+* initially was implemented using watch service, but some issues were raised such as-
+using CREATED events didn't recognize the new events (were already created)
+using MODIFIED listed the events multiple times for each change (including metadata), and made it much more complex to handle.
+
+
+
+
+
