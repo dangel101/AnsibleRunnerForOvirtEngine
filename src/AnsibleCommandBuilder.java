@@ -1,10 +1,13 @@
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -29,8 +32,8 @@ public class AnsibleCommandBuilder {
     private Path privateKey;
     private String cluster;
     private List<String> hostnames;
-//    private Map<String, Object> variables;
-    private Set<String> variables;
+    private Map<String, Object> variables;
+//    private Set<String> variables;
     private String variableFilePath;
     private String limit;
     private Path inventoryFile;
@@ -53,17 +56,22 @@ public class AnsibleCommandBuilder {
     private Path playbookDir;
 
     // ENV variables
-    private Map<String, String> envVars;
+//    private Map<String, String> envVars;
 
     private UUID uuid;
+    private File extraVars;
+    private File specificPlaybook;
+//    private Path specificPlaybook;
 
-    public AnsibleCommandBuilder() {
+    public AnsibleCommandBuilder(VDS vds, UUID uuid) {
         cluster = "unspecified";
         enableLogging = true;
-        envVars = new HashMap<>();
+//        envVars = new HashMap<>();
         playbookDir = Paths.get(AnsibleConstants.PROJECT_DIR);
-        variables = new HashSet<>();
-//        variables = new HashMap<>();
+//        variables = new HashSet<>();
+//        this.vds = vds;
+        this.uuid = uuid;
+        variables = new HashMap<>();
     }
 
     public AnsibleCommandBuilder verboseLevel(AnsibleVerbosity verboseLevel) {
@@ -107,8 +115,8 @@ public class AnsibleCommandBuilder {
     }
 
     public AnsibleCommandBuilder variable(String name, Object value) {
-        this.variables.add(name+"="+value+" ");
-//        this.variables.put(name, value);
+//        this.variables.add(name+"="+value+" ");
+        this.variables.put(name, value);
         return this;
     }
 
@@ -208,7 +216,11 @@ public class AnsibleCommandBuilder {
 //        return variables;
 //    }
 
-    public Set<String> getVariables() {
+//    public Set<String> getVariables() {
+//        return variables;
+//    }
+
+    public Map<String, Object> getVariables() {
         return variables;
     }
 
@@ -232,24 +244,77 @@ public class AnsibleCommandBuilder {
      *  ${logFilePrefix:ansible}-${timestamp}-${logFileName:playbook}[-${logFileSuffix}].log
      */
     public List<String> build() {
+        createTempVarsFile();
+        createSpecificPlayBook();
+        addExtraVarsToPlaybook();
         List<String> ansibleCommand = new ArrayList<>();
         ansibleCommand.add(ANSIBLE_COMMAND);
         ansibleCommand.add(ANSIBLE_EXECUTION_METHOD);
         ansibleCommand.add(AnsibleConstants.PROJECT_DIR);
         ansibleCommand.add("-p");
-        ansibleCommand.add(AnsibleConstants.HOST_DEPLOY_PLAYBOOK);
+        ansibleCommand.add(specificPlaybook.toString());
+//        ansibleCommand.add(AnsibleConstants.HOST_DEPLOY_PLAYBOOK);
         ansibleCommand.add("--artifact-dir");
         ansibleCommand.add(AnsibleConstants.ARTIFACTS_DIR);
         ansibleCommand.add("--inventory");
-        ansibleCommand.add(String.valueOf(this.inventoryFile));
+        ansibleCommand.add(String.valueOf(inventoryFile));
         ansibleCommand.add("-i");
-        ansibleCommand.add(String.valueOf(this.uuid));
-//        ansibleCommand.add("--debug");
-//        ansibleCommand.add("-vvvvv");
-//        ansibleCommand.add("--cmdline_args");
-//        ansibleCommand.add("-e");
-//        ansibleCommand.add("/home/delfassy/projects/AnsibleRunnerImplementation/ansible-runner-service-project/env/host4.yml");
-
+        ansibleCommand.add(String.valueOf(uuid));
         return ansibleCommand;
+    }
+
+    //create temp extraVars file with play uuid name
+    private void createTempVarsFile() {
+        try {
+            extraVars = new File(AnsibleConstants.EXTRA_VARS_DIR + uuid + ".yml");
+            BufferedWriter bf = new BufferedWriter(new FileWriter(extraVars.getPath()));
+            for (Map.Entry<String, Object> entry :
+                    variables.entrySet()) {
+                bf.write(entry.getKey() + ": "
+                        + entry.getValue());
+                bf.newLine();
+            }
+            bf.flush();
+            bf.close();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private File getTepVarsPath() {
+        return this.extraVars;
+    }
+
+    private void createSpecificPlayBook() {
+        File orgPlaybook = new File(AnsibleConstants.HOST_DEPLOY_PLAYBOOK_DIR);
+        specificPlaybook = new File(AnsibleConstants.PROJECT_DIR + "/project/" + uuid + ".yml");
+        try {
+            specificPlaybook.createNewFile();
+            FileUtils.copyFile(orgPlaybook, specificPlaybook);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+//    private File getSpecificPlaybook() {
+//        return this.specificPlaybook;
+//    }
+
+    private void addExtraVarsToPlaybook() {
+        try {
+            List<String> lines = Files.readAllLines(specificPlaybook.toPath(), StandardCharsets.UTF_8);
+            int position = lines.indexOf("      include_vars:") + 1;
+            lines.add(position, "        file: " + extraVars.getPath());
+//            lines.add(position, " " + extraVars.getPath());
+            Files.write(specificPlaybook.toPath(), lines, StandardCharsets.UTF_8);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void removeTempExtraVarsFile() {
+    }
+
+    private void removeSpecificPlaybook() {
     }
 }

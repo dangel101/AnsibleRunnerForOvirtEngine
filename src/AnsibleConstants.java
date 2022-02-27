@@ -5,4 +5,5 @@ public class AnsibleConstants {
     final static String INVENTORY_DIR = "/home/delfassy/projects/AnsibleRunnerForOvirtEngine/ansible-runner-service-project/inventory/hosts";
     final static String HOST_DEPLOY_LOG_DIRECTORY = "/home/delfassy/projects/AnsibleRunnerForOvirtEnginen/ansible-runner-service-project/host-deploy-logs";
     final static String EXTRA_VARS_DIR = "/home/delfassy/projects/AnsibleRunnerForOvirtEngine/ansible-runner-service-project/env/";
+    final static String HOST_DEPLOY_PLAYBOOK_DIR = "/home/delfassy/projects/AnsibleRunnerForOvirtEngine/ansible-runner-service-project/project/test.yml";
 }

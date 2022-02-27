@@ -1,6 +1,10 @@
 - hosts: all
   remote_user: root
 
+  pre_tasks:
+    - name: add host specific extra vars
+      include_vars:
+
   roles:
     - name: role1
     - name: role2
@@ -10,9 +14,9 @@
       debug:
         msg: "this is a plain ansible task"
 
-#    - name: print an extra var
-#      debug:
-#        msg: "extra var cluster name: {{ host_deploy_cluster_name }}"
+    - name: print an extra var
+      debug:
+        msg: "extra var cluster name: {{ host_deploy_cluster_name }}"
 
 #    - name: aaa
 #      task_test:

@@ -18,24 +18,21 @@ public class AnsibleExecutor {
         this.uuid = UUID.randomUUID();
     }
 
-    public List<String> runCommand() {
-        AnsibleCommandBuilder command = createCommand(vds, uuid);
-        try {
-            inventoryFile = createInventoryFile(command);
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-        List<String> ansibleCommand = command.build();
-        System.out.println("ansible command: " + ansibleCommand);
-        final Object executeLock = new Object();
-        synchronized (executeLock) {
+//    public List<String> runCommand() {
+//        AnsibleCommandBuilder command = createCommand(vds, uuid);
+//        try {
+//            inventoryFile = createInventoryFile(command);
+//        } catch(Exception e) {
+//            e.printStackTrace();
+//        }
+//        List<String> ansibleCommand = command.build();
+//        System.out.println("ansible command: " + ansibleCommand);
+//        return ansibleCommand;
+//    }
 
-        }
-        return ansibleCommand;
-    }
-
-    private AnsibleCommandBuilder createCommand(VDS vds, UUID uuid) {
-        AnsibleCommandBuilder command = new AnsibleCommandBuilder()
+//    public AnsibleCommandBuilder createCommand(VDS vds, UUID uuid) {
+    public AnsibleCommandBuilder createCommand() {
+        AnsibleCommandBuilder command = new AnsibleCommandBuilder(vds, uuid)
                 .hosts(vds)
                 .variable("host_deploy_cluster_name", vds.getClusterName())
                 .variable("ansible_port", vds.getSshPort())
@@ -44,6 +41,16 @@ public class AnsibleExecutor {
                 .logFilePrefix("ovirt-host-deploy-ansible")
                 .logFileName(vds.getHostName())
                 .playbook(AnsibleConstants.HOST_DEPLOY_PLAYBOOK);
+
+        try {
+            inventoryFile = createInventoryFile(command);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        List<String> ansibleCommand = command.build();
+        System.out.println("ansible command: " + ansibleCommand);
+
         return command;
     }
 
@@ -56,7 +63,7 @@ public class AnsibleExecutor {
         if (command.inventoryFile() == null) {
             // If hostnames are empty we just don't pass any inventory file:
             if (CollectionUtils.isNotEmpty(command.hostnames())) {
-                System.out.println("Inventory hosts: " + command.hostnames());
+//                System.out.println("Inventory hosts: " + command.hostnames());
                 inventoryFile = Files.createTempFile("ansible-inventory", "");
                 Files.write(inventoryFile, StringUtils.join(command.hostnames(), System.lineSeparator()).getBytes());
                 command.inventoryFile(inventoryFile);

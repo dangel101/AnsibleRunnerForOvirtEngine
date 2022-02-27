@@ -25,12 +25,15 @@ public class Main {
 
         final Object executeLock = new Object();
         while (!uuids.isEmpty()) {
-            synchronized (executeLock)  {
-                UUID currentUuid = uuids.poll();
-                System.out.println("working on uuid: " + currentUuid);
-                poolExecutor.execute(new AnsibleProcessor(currentUuid));
-            }
+            poolExecutor.execute(new AnsibleProcessor(uuids.poll()));
         }
+//        while (!uuids.isEmpty()) {
+//            synchronized (executeLock)  {
+//                UUID currentUuid = uuids.poll();
+//                System.out.println("working on uuid: " + currentUuid);
+//                poolExecutor.execute(new AnsibleProcessor(currentUuid));
+//            }
+//        }
         poolExecutor.shutdown();
     }
 
@@ -40,10 +43,15 @@ public class Main {
         VDS vds = createVds(ip);
         vds.setClusterName(cluster);
         AnsibleExecutor executor = new AnsibleExecutor(vds);
-        List<String> command  = executor.runCommand();
+        AnsibleCommandBuilder commandBuilder  = executor.createCommand();
+        List<String> command = commandBuilder.build();
+//        List<String> command  = executor.createCommand();
         UUID uuid = executor.getUUID();
+
+        // remove temp extra vars file!
         uuids.add(uuid);
         poolExecutor.execute(new PlaybookRunner(timeout, command));
+//        return vds.getHostName();
 //        try {
 //            Files.delete(Paths.get(AnsibleConstants.EXTRA_VARS_DIR+"extravars"));
 //        } catch (IOException e) {

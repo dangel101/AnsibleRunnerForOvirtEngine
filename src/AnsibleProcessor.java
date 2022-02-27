@@ -59,7 +59,7 @@ public class AnsibleProcessor implements Runnable {
     }
 
     public void artifactHandler(int lastEventID) throws IOException, InterruptedException, TimeoutException {
-        System.out.println("thread: " + Thread.currentThread().getName());
+//        System.out.println("thread: " + Thread.currentThread().getName());
         int iteration = 0;
         // retrieve timeout from engine constants.
         while (!playHasEnded()) {
@@ -153,9 +153,10 @@ public class AnsibleProcessor implements Runnable {
                                 ? RunnerJsonNode.formatDebugMessage(taskName, stdout)
                                 : taskName;
                         Files.writeString(auditLog,
-                                taskText + "\n",
+                                new StringBuilder("\n" + ZonedDateTime.now().format(formatter)) + " " + taskText + "\n",
                                 StandardOpenOption.CREATE,
                                 StandardOpenOption.APPEND);
+                        System.out.println("Thread: " + Thread.currentThread().getName() + " Processing EVENT: " + taskName);
                     } else if (RunnerJsonNode.isEventFailed(currentNode)
                             || RunnerJsonNode.isEventUnreachable(currentNode)) {
                         runnerLogger.log(currentNode);
