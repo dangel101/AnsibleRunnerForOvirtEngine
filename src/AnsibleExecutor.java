@@ -6,32 +6,20 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
-public class AnsibleExecutor {
-    private Path inventoryFile = null;
+public class AnsibleExecutor implements Runnable {
     private VDS vds;
     private UUID uuid;
+    private int timeout;
 
-
-    public AnsibleExecutor(VDS vds) {
+    public AnsibleExecutor(VDS vds, int timeout, UUID uuid) {
         this.vds = vds;
-        this.uuid = UUID.randomUUID();
+        this.uuid = uuid;
+        this.timeout = timeout;
     }
 
-//    public List<String> runCommand() {
-//        AnsibleCommandBuilder command = createCommand(vds, uuid);
-//        try {
-//            inventoryFile = createInventoryFile(command);
-//        } catch(Exception e) {
-//            e.printStackTrace();
-//        }
-//        List<String> ansibleCommand = command.build();
-//        System.out.println("ansible command: " + ansibleCommand);
-//        return ansibleCommand;
-//    }
-
-//    public AnsibleCommandBuilder createCommand(VDS vds, UUID uuid) {
-    public AnsibleCommandBuilder createCommand() {
+    private AnsibleCommandBuilder createCommand() {
         AnsibleCommandBuilder command = new AnsibleCommandBuilder(vds, uuid)
                 .hosts(vds)
                 .variable("host_deploy_cluster_name", vds.getClusterName())
@@ -43,7 +31,7 @@ public class AnsibleExecutor {
                 .playbook(AnsibleConstants.HOST_DEPLOY_PLAYBOOK);
 
         try {
-            inventoryFile = createInventoryFile(command);
+            createInventoryFile(command);
         } catch(Exception e) {
             e.printStackTrace();
         }
@@ -58,20 +46,45 @@ public class AnsibleExecutor {
     /**
      * Create a temporary inventory file if user didn't specify it.
      */
-    private Path createInventoryFile(AnsibleCommandBuilder command) throws IOException {
-        Path inventoryFile = null;
+    private void createInventoryFile(AnsibleCommandBuilder command) throws IOException {
+        Path inventoryFile;
         if (command.inventoryFile() == null) {
-            // If hostnames are empty we just don't pass any inventory file:
+//             If hostnames are empty we just don't pass any inventory file:
             if (CollectionUtils.isNotEmpty(command.hostnames())) {
-                inventoryFile = Files.createTempFile("ansible-inventory", "");
-                Files.write(inventoryFile, StringUtils.join(command.hostnames(), System.lineSeparator()).getBytes());
-                command.inventoryFile(inventoryFile);
+                try {
+                    inventoryFile = Files.createTempFile("ansible-inventory", "");
+                    Files.write(inventoryFile, StringUtils.join(command.hostnames(), System.lineSeparator()).getBytes());
+                    command.inventoryFile(inventoryFile);
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
-        return inventoryFile;
     }
 
     public UUID getUUID() {
         return uuid;
+    }
+
+    private void runPlaybook(List<String> command) {
+        Process ansibleProcess = null;
+        try {
+            ProcessBuilder ansibleProcessBuilder = new ProcessBuilder(command);
+            ansibleProcess = ansibleProcessBuilder.start();
+            if (!ansibleProcess.waitFor(timeout, TimeUnit.MINUTES)) {
+                throw new Exception("Timeout occurred while executing Ansible playbook.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("thread: " + Thread.currentThread().getName() + " ansible process exit value: " + ansibleProcess.exitValue());
+    }
+
+    @Override
+    public void run() {
+        AnsibleCommandBuilder commandBuilder = createCommand();
+        List<String> command = commandBuilder.build();
+        runPlaybook(command);
+        commandBuilder.cleanup();
     }
 }

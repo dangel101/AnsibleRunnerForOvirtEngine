@@ -59,7 +59,6 @@ public class AnsibleProcessor implements Runnable {
     }
 
     public void artifactHandler(int lastEventID) throws IOException, InterruptedException, TimeoutException {
-//        System.out.println("thread: " + Thread.currentThread().getName());
         int iteration = 0;
         // retrieve timeout from engine constants.
         while (!playHasEnded()) {
@@ -173,11 +172,8 @@ public class AnsibleProcessor implements Runnable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-//            System.out.println("event: " + event);
             this.lastEvent = event;
         }
-//        System.out.println("sorted events num: " + sortedEvents.size());
-//        System.out.println("this.last event: " + this.lastEvent);
         return this.lastEvent.isEmpty() ? lastEventId : Integer.valueOf(this.lastEvent.split("-")[0]);
     }
 }

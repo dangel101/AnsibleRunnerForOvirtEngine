@@ -1,20 +1,38 @@
+//TODO:
+* improve loggings, implement other methods
+* additional test cases
+
+tests:
+single host,
+addition of 4 hosts (plays running simultaniously)
+
+
 AnsibleConstants:
 hold project & artifacts dirs and playbook name.
 change if testing.
 
 Main:
+this is the test class.
+uuid can't be retrieved from the test, so it needs to be created initially, and under it all relevant job_events are stored.
 
+AnsibleExecutor:
+* set play variables
+* set inventory file
+* run the command (ansible-runner run...)
+* initiate cleanup after the play has finished and the created files aren't needed anymore.
 
-
-PlaybookRunner:
-executes the command to run the playbook with the uuid and host parameters
+AnsibleCommandbuilder:
+* create file to store play's extra vars (such as host_deploy_cluster_name, ovirt_qemu_ca_cert, host_deploy_origin_type etc.) 
+* create a new playbook (copy of the original playbook) that has a pre_tasks section where it includes these vars
+* build the command to run 
+* cleanup: delete the files (extraVars, specificPlaybook) that were created for the specific run
 
 AnsibleProcessor:
 * playHasEnded(): successful run ends with "playbook_on_stats" event. 
-* artifactHandler: continues to process the events until it reaches the final event or 'till timeout was reached.
+* artifactHandler: continues to process the events until it reaches the final event or 'till timeout was reached. if task failed - throws an exception
 * processEvents: 
 	- get the events sorted numerically- only events that haven't been handled yet.
-	- return if jsonfile is not valid
+	- return (and start processEvents again) if jsonfile is not valid
 	- log each task's name,
 	- log each task's output whether succeeded or failed.
 	- the log contain all of the needed output, and currently saves in 2 places:
