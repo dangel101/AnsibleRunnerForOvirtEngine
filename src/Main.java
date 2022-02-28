@@ -17,47 +17,41 @@ public class Main {
         //each call for playbook- generate random uuid, add it to list.
         //run playbook, and ansibleprocessor runs while there are items on the list.
 
-        test("192.168.100.204", "cluster1");
-        test("192.168.100.254", "cluster2");
-        test("192.168.100.146", "cluster3");
-        test("192.168.100.250", "cluster4");
+        AnsibleCommandBuilder builder1 = test("192.168.100.204", "cluster1");
+        AnsibleCommandBuilder builder2 = test("192.168.100.254", "cluster2");
+        AnsibleCommandBuilder builder3 = test("192.168.100.146", "cluster3");
+        AnsibleCommandBuilder builder4 = test("192.168.100.250", "cluster4");
+        poolExecutor.getActiveCount();
 
-
-        final Object executeLock = new Object();
         while (!uuids.isEmpty()) {
             poolExecutor.execute(new AnsibleProcessor(uuids.poll()));
         }
-//        while (!uuids.isEmpty()) {
-//            synchronized (executeLock)  {
-//                UUID currentUuid = uuids.poll();
-//                System.out.println("working on uuid: " + currentUuid);
-//                poolExecutor.execute(new AnsibleProcessor(currentUuid));
-//            }
-//        }
+        poolExecutor.getActiveCount();
+
         poolExecutor.shutdown();
+        poolExecutor.getActiveCount();
+
+//        builder1.cleanup();
+//        builder2.cleanup();
+//        builder3.cleanup();
+//        builder4.cleanup();
+
     }
 
 
     // creating a raw data for vds + executing run command
-    public static synchronized void test(String ip, String cluster) {
+    public static synchronized AnsibleCommandBuilder test(String ip, String cluster) {
         VDS vds = createVds(ip);
         vds.setClusterName(cluster);
         AnsibleExecutor executor = new AnsibleExecutor(vds);
         AnsibleCommandBuilder commandBuilder  = executor.createCommand();
         List<String> command = commandBuilder.build();
-//        List<String> command  = executor.createCommand();
         UUID uuid = executor.getUUID();
-
-        // remove temp extra vars file!
         uuids.add(uuid);
         poolExecutor.execute(new PlaybookRunner(timeout, command));
-//        return vds.getHostName();
-//        try {
-//            Files.delete(Paths.get(AnsibleConstants.EXTRA_VARS_DIR+"extravars"));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        return commandBuilder;
     }
+
 
     public static VDS createVds(String hostname) {
         VDS vds  = new VDS();

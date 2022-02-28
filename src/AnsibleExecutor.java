@@ -63,7 +63,6 @@ public class AnsibleExecutor {
         if (command.inventoryFile() == null) {
             // If hostnames are empty we just don't pass any inventory file:
             if (CollectionUtils.isNotEmpty(command.hostnames())) {
-//                System.out.println("Inventory hosts: " + command.hostnames());
                 inventoryFile = Files.createTempFile("ansible-inventory", "");
                 Files.write(inventoryFile, StringUtils.join(command.hostnames(), System.lineSeparator()).getBytes());
                 command.inventoryFile(inventoryFile);

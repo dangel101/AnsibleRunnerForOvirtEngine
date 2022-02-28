@@ -1,0 +1,1 @@
+{"event": "verbose", "uuid": "0869b3f9-70b3-48c8-91bf-14fea54a9458", "counter": 1, "stdout": "ERROR! the playbook: /home/delfassy/projects/AnsibleRunnerForOvirtEngine/ansible-runner-service-project/project/c8f57bdf-fed4-4649-be4d-701be54b2e12.yml could not be found", "start_line": 0, "end_line": 1, "runner_ident": "c8f57bdf-fed4-4649-be4d-701be54b2e12"}

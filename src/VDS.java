@@ -1,5 +1,3 @@
-import java.util.Set;
-
 public class VDS {
     private VdsStatic vdsStatic;
     private VdsDynamic vdsDynamic;

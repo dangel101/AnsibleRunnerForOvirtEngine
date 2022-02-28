@@ -1,16 +1,11 @@
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
-
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * AnsibleCommandBuilder creates a ansible-playbook command.
@@ -33,7 +28,6 @@ public class AnsibleCommandBuilder {
     private String cluster;
     private List<String> hostnames;
     private Map<String, Object> variables;
-//    private Set<String> variables;
     private String variableFilePath;
     private String limit;
     private Path inventoryFile;
@@ -54,21 +48,14 @@ public class AnsibleCommandBuilder {
     private boolean enableLogging;
 
     private Path playbookDir;
-
-    // ENV variables
-//    private Map<String, String> envVars;
-
     private UUID uuid;
     private File extraVars;
     private File specificPlaybook;
-//    private Path specificPlaybook;
 
     public AnsibleCommandBuilder(VDS vds, UUID uuid) {
         cluster = "unspecified";
         enableLogging = true;
-//        envVars = new HashMap<>();
         playbookDir = Paths.get(AnsibleConstants.PROJECT_DIR);
-//        variables = new HashSet<>();
 //        this.vds = vds;
         this.uuid = uuid;
         variables = new HashMap<>();
@@ -216,24 +203,8 @@ public class AnsibleCommandBuilder {
 //        return variables;
 //    }
 
-//    public Set<String> getVariables() {
-//        return variables;
-//    }
-
     public Map<String, Object> getVariables() {
         return variables;
-    }
-
-    public void setExtraArgs() {
-        //create extraargs file and add vars to file
-//        File extraVars = new File(AnsibleConstants.EXTRA_VARS_DIR + "extravars");
-//        variables.forEach((key, value) -> {
-//            try {
-//                FileUtils.writeStringToFile(extraVars, key + ": " + value + "\n", StandardCharsets.UTF_8, true);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        });
     }
 
     /**
@@ -253,7 +224,6 @@ public class AnsibleCommandBuilder {
         ansibleCommand.add(AnsibleConstants.PROJECT_DIR);
         ansibleCommand.add("-p");
         ansibleCommand.add(specificPlaybook.toString());
-//        ansibleCommand.add(AnsibleConstants.HOST_DEPLOY_PLAYBOOK);
         ansibleCommand.add("--artifact-dir");
         ansibleCommand.add(AnsibleConstants.ARTIFACTS_DIR);
         ansibleCommand.add("--inventory");
@@ -296,25 +266,19 @@ public class AnsibleCommandBuilder {
         }
     }
 
-//    private File getSpecificPlaybook() {
-//        return this.specificPlaybook;
-//    }
-
     private void addExtraVarsToPlaybook() {
         try {
             List<String> lines = Files.readAllLines(specificPlaybook.toPath(), StandardCharsets.UTF_8);
             int position = lines.indexOf("      include_vars:") + 1;
             lines.add(position, "        file: " + extraVars.getPath());
-//            lines.add(position, " " + extraVars.getPath());
             Files.write(specificPlaybook.toPath(), lines, StandardCharsets.UTF_8);
         } catch(Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void removeTempExtraVarsFile() {
-    }
-
-    private void removeSpecificPlaybook() {
+    public void cleanup() {
+        this.extraVars.delete();
+        this.specificPlaybook.delete();
     }
 }
