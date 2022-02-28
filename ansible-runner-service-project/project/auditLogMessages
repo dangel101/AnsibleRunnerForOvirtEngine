@@ -754,3 +754,133 @@
 2022-02-28 12:41:58 IST test playbook, first task: debug msg: this is a plain ansible task
 
 2022-02-28 12:41:58 IST print an extra var: debug msg: extra var cluster name: cluster4
+
+2022-02-28 13:09:49 IST
+
+2022-02-28 13:09:50 IST
+
+2022-02-28 13:09:50 IST
+
+2022-02-28 13:09:50 IST
+
+2022-02-28 13:09:54 IST Gathering Facts
+
+2022-02-28 13:09:54 IST add host specific extra vars
+
+2022-02-28 13:09:54 IST First role, first task: debug msg: this is a task of the first role
+
+2022-02-28 13:09:54 IST First role, second task: debug msg: this is a second task of the first role
+
+2022-02-28 13:09:54 IST First role, third task: debug msg: this is a third task of the first role
+
+2022-02-28 13:09:54 IST Test: [WARNING] this is a debug message
+
+2022-02-28 13:09:56 IST first role, 4th task - which takes time... - fetch installed packages
+
+2022-02-28 13:09:56 IST Detect host operating system
+
+2022-02-28 13:09:56 IST Parse operating system release
+
+2022-02-28 13:09:56 IST Detect if host is a prebuilt image
+
+2022-02-28 13:09:56 IST Setup Ansible Python interpreter
+
+2022-02-28 13:09:56 IST Second role, first task: debug msg: this is a task of the second role
+
+2022-02-28 13:09:57 IST Second role, second task: [WARNING] this is a debug msg
+
+2022-02-28 13:09:57 IST test playbook, first task: debug msg: this is a plain ansible task
+
+2022-02-28 13:09:57 IST print an extra var: debug msg: extra var cluster name: cluster1
+
+2022-02-28 13:09:59 IST Gathering Facts
+
+2022-02-28 13:09:59 IST add host specific extra vars
+
+2022-02-28 13:09:59 IST First role, first task: debug msg: this is a task of the first role
+
+2022-02-28 13:09:59 IST First role, second task: debug msg: this is a second task of the first role
+
+2022-02-28 13:09:59 IST First role, third task: debug msg: this is a third task of the first role
+
+2022-02-28 13:09:59 IST Test: [WARNING] this is a debug message
+
+2022-02-28 13:09:59 IST Gathering Facts
+
+2022-02-28 13:09:59 IST add host specific extra vars
+
+2022-02-28 13:09:59 IST First role, first task: debug msg: this is a task of the first role
+
+2022-02-28 13:09:59 IST First role, second task: debug msg: this is a second task of the first role
+
+2022-02-28 13:09:59 IST First role, third task: debug msg: this is a third task of the first role
+
+2022-02-28 13:09:59 IST Test: [WARNING] this is a debug message
+
+2022-02-28 13:10:01 IST first role, 4th task - which takes time... - fetch installed packages
+
+2022-02-28 13:10:01 IST Detect host operating system
+
+2022-02-28 13:10:01 IST Parse operating system release
+
+2022-02-28 13:10:01 IST Detect if host is a prebuilt image
+
+2022-02-28 13:10:01 IST Setup Ansible Python interpreter
+
+2022-02-28 13:10:02 IST first role, 4th task - which takes time... - fetch installed packages
+
+2022-02-28 13:10:02 IST Detect host operating system
+
+2022-02-28 13:10:02 IST Parse operating system release
+
+2022-02-28 13:10:02 IST Detect if host is a prebuilt image
+
+2022-02-28 13:10:02 IST Setup Ansible Python interpreter
+
+2022-02-28 13:10:02 IST Second role, first task: debug msg: this is a task of the second role
+
+2022-02-28 13:10:02 IST Second role, second task: [WARNING] this is a debug msg
+
+2022-02-28 13:10:02 IST test playbook, first task: debug msg: this is a plain ansible task
+
+2022-02-28 13:10:02 IST print an extra var: debug msg: extra var cluster name: cluster2
+
+2022-02-28 13:10:02 IST print an extra var: debug msg: extra var cluster name: cluster3
+
+2022-02-28 13:10:02 IST Second role, first task: debug msg: this is a task of the second role
+
+2022-02-28 13:10:02 IST Second role, second task: [WARNING] this is a debug msg
+
+2022-02-28 13:10:02 IST test playbook, first task: debug msg: this is a plain ansible task
+
+2022-02-28 13:10:04 IST print an extra var: debug msg: extra var cluster name: cluster3
+
+2022-02-28 13:10:09 IST Gathering Facts
+
+2022-02-28 13:10:09 IST add host specific extra vars
+
+2022-02-28 13:10:09 IST First role, first task: debug msg: this is a task of the first role
+
+2022-02-28 13:10:10 IST First role, second task: debug msg: this is a second task of the first role
+
+2022-02-28 13:10:10 IST First role, third task: debug msg: this is a third task of the first role
+
+2022-02-28 13:10:10 IST Test: [WARNING] this is a debug message
+
+2022-02-28 13:10:11 IST first role, 4th task - which takes time... - fetch installed packages
+
+2022-02-28 13:10:11 IST Detect host operating system
+
+2022-02-28 13:10:11 IST Parse operating system release
+
+2022-02-28 13:10:11 IST Detect if host is a prebuilt image
+
+2022-02-28 13:10:13 IST Setup Ansible Python interpreter
+
+2022-02-28 13:10:13 IST Second role, first task: debug msg: this is a task of the second role
+
+2022-02-28 13:10:13 IST Second role, second task: [WARNING] this is a debug msg
+
+2022-02-28 13:10:13 IST test playbook, first task: debug msg: this is a plain ansible task
+
+2022-02-28 13:10:13 IST print an extra var: debug msg: extra var cluster name: cluster4
